@@ -20,7 +20,7 @@ let routes = [
     { path: "/verify-email", element: <VerifyEmail /> },
     { path: "/all-discount-of-the-day", element: <AllDiscountOfTheDay /> },
     { path: "/all-new-product", element: <AllNewProduct /> },
-    { path: "/product-info/:shortName", element: <ProductInfo /> },
+    { path: "/product-info/:productCode", element: <ProductInfo /> },
     { path: "/category/:shortName", element: <Category /> },
 ]
 

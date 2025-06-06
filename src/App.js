@@ -13,6 +13,9 @@ function App() {
 
   const [scroll, setScroll] = useState(document.documentElement.scrollTop);
   const [isShowBtnGoToUp, setIsShowBtnGoToUp] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const login = () => setIsLoggedIn(true);
+  const logout = () => setIsLoggedIn(false);
 
   useEffect(() => {
     if (scroll > 100) {
@@ -33,7 +36,10 @@ function App() {
   return (
     <>
       <AuthContext.Provider value={{
-        api:"https://devhelper.ir"
+        api:"https://localhost:7090/api/",
+        isLoggedIn: isLoggedIn,
+        login: login,
+        logout: logout
       }}>
         <Header />
         {routes}

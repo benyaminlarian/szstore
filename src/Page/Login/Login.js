@@ -17,7 +17,7 @@ import Spinner from "../../Components/Spinner/Spinner";
 
 export default function Login() {
   const navigate = useNavigate();
-  const routeApi = useContext(AuthContext);
+  const { api, isLoggedIn, login, logout }= useContext(AuthContext);
 
   const [isRegisterFocus, setIsRegisterFocus] = useState(false);
   const [isShowSpinnerRegister, setIsShowSpinnerRegister] = useState(false);
@@ -57,16 +57,16 @@ export default function Login() {
   const registerHandler = (e) => {
     e.preventDefault();
     setIsShowSpinnerRegister(true)
-    fetch(`${routeApi.api}/api/Account/register`, {
+    fetch(`${api}customer/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       credentials:"include",
       body:JSON.stringify({
-        userName: formStateRegister.inputs.userName.value,
-        email: formStateRegister.inputs.email.value,
-        password: formStateRegister.inputs.password.value,
+        un: formStateRegister.inputs.userName.value,
+        //email: formStateRegister.inputs.email.value,
+        pw: formStateRegister.inputs.password.value,
       }),
     })
       .then((res) => {
@@ -80,27 +80,33 @@ export default function Login() {
   const loginHandler = (e) => {
     e.preventDefault();
     setIsShowSpinnerLogin(true)
-    fetch(`${routeApi.api}/api/Account/login`, {
+    fetch(`${api}customer/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       credentials:"include",
       body:JSON.stringify({
-        userName: formStateLogin.inputs.userName.value,
-        password: formStateLogin.inputs.password.value,
+        Un: formStateLogin.inputs.userName.value,
+        Pw: formStateLogin.inputs.password.value,
       }),
     })
       .then((res) => {
         if(res.status === 200){
+          login()
           Swal.fire({
             title:"شما با موفقیت وارد اکانت خود شدید",
             icon:"success",
             confirmButtonText:"بستن"
           }).then(res =>{
             if(res.isConfirmed){
-              // navigate("/")
+              navigate("/")
             }
+          })
+        }
+        else if(res.status > 399){
+          Swal.fire({
+            title: "نام کاربری یا رمز عبور اشتباه است",
           })
         }
         setIsShowSpinnerLogin(false)
@@ -146,7 +152,7 @@ export default function Login() {
               <AiOutlineUser className="icon-input-register" />
             </div>
 
-            <div className="div-input-parent-register">
+            {/* <div className="div-input-parent-register">
               <Input
                 type="text"
                 className="input-register"
@@ -163,7 +169,7 @@ export default function Login() {
                 placeholder="ایمیل خود را وارد کنید"
               />
               <AiOutlineMail className="icon-input-register" />
-            </div>
+            </div> */}
 
             <div className="div-input-parent-register">
               <Input
@@ -174,7 +180,7 @@ export default function Login() {
                 element="input"
                 validation={[
                   requiredValidator(),
-                  minValidator(8),
+                  minValidator(1),
                   maxValidator(20),
                 ]}
                 onInputHandler={onInputHandlerRegister}

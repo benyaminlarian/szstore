@@ -3,13 +3,20 @@ import "./Header.css";
 import { BsSearch, BsBag, BsFillMoonStarsFill } from "react-icons/bs";
 import { FaUserAlt, FaSun } from "react-icons/fa";
 import { AiOutlineMenu } from "react-icons/ai";
+import { IoLogOut } from "react-icons/io5";
 import { Container } from "react-bootstrap";
 import PhoneHeader from "./PhoneHeader/PhoneHeader";
 import { Link, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import AuthContext from "../../Context/AuthContext"
+import { Navigate } from "react-router-dom";
 
 export default function Header() {
+  const { isLoggedIn } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
   const [width, setWidth] = useState(window.innerWidth);
   const [isShowMenu, setIsShowMenu] = useState(false);
+  const navigate = useNavigate()
 
   const [searchValue, setSearchValue] = useState("");
   const [localThem, setLocalThem] = useState(localStorage.getItem("them"));
@@ -19,7 +26,11 @@ export default function Header() {
   );
   const path = window.location.pathname;
 
-  const navigate = useNavigate();
+  const logoutHandler = (e) => {
+    e.preventDefault()
+    logout()
+    navigate("/")
+  }
 
   useEffect(() => {
     document.documentElement.scrollTop = 0;
@@ -57,7 +68,7 @@ export default function Header() {
       document.documentElement.style.setProperty('--text-color', '#fff');
       document.documentElement.style.setProperty('--against-text-color', 'black');
       document.documentElement.style.setProperty('--bg-gray', '#1B4242');
-    }else{
+    } else {
       // document.documentElement.style.setProperty('--bg-body1', 'rgba(203,203,203,1)');
       // document.documentElement.style.setProperty('--bg-body2', 'rgba(245,245,245,1)');
       // document.documentElement.style.setProperty('--bg-card1', 'rgba(125,130,136,1)');
@@ -71,7 +82,7 @@ export default function Header() {
       document.documentElement.style.setProperty('--bg-gray', '#9EC8B9');
     }
   }, [localThem]);
-  
+
   return (
     <>
       <div className="header">
@@ -93,39 +104,52 @@ export default function Header() {
                   </div>
                 </Link>
                 <div className="search-top-header-parent">
-                <div className="search-top-header">
-                  <input
-                    type="search"
-                    placeholder="جست و جو کنید"
-                    className="input-top-header"
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                    onKeyDown={(e) =>
-                      e.keyCode === 13 &&
-                      navigate(
-                        `/search/${searchValue == "" ? "همه" : searchValue}`
-                      )
-                    }
-                  />
-                  <Link
-                    to={`/search/${searchValue == "" ? "همه" : searchValue}`}
-                  >
-                    <BsSearch className="icon-search-top-header" />
-                  </Link>
-                </div>
+                  <div className="search-top-header">
+                    <input
+                      type="search"
+                      placeholder="جست و جو کنید"
+                      className="input-top-header"
+                      value={searchValue}
+                      onChange={(e) => setSearchValue(e.target.value)}
+                      onKeyDown={(e) =>
+                        e.keyCode === 13 &&
+                        navigate(
+                          `/search/${searchValue == "" ? "همه" : searchValue}`
+                        )
+                      }
+                    />
+                    <Link
+                      to={`/search/${searchValue == "" ? "همه" : searchValue}`}
+                    >
+                      <BsSearch className="icon-search-top-header" />
+                    </Link>
+                  </div>
                 </div>
               </>
             )}
-            <div className="my-4">
-              <Link to="/login" style={{ color: "black" }}>
-                <span className="icon-login-top-header-parent">
-                  <FaUserAlt className="font-icons" />
+            {isLoggedIn ? (
+              <div className="my-4">
+                <Link>
+                <span className="icon-login-top-header-parent" onClick={(e) => logoutHandler(e)}>
+                  <IoLogOut className="font-icons" />
                 </span>
+                </Link>
                 <span className="text-login-top-header">
-                ورود / ثبت نام
+                  وارد شدید. حساب کاربری
                 </span>
-              </Link>
-            </div>
+              </div>
+            ) : (
+              <div className="my-4">
+                <Link to="/login" style={{ color: "black" }}>
+                  <span className="icon-login-top-header-parent">
+                    <FaUserAlt className="font-icons" />
+                  </span>
+                  <span className="text-login-top-header">
+                    ورود / ثبت نام
+                  </span>
+                </Link>
+              </div>
+            )}
             <div className="bag-like-top-header-parent">
               <div className="bag-like-top-header ms-3">
                 <Link to="/likes">
